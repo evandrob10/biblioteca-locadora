@@ -1,10 +1,10 @@
 import uniqid from 'uniqid';
 
-class Livro{
-    constructor(titulo, autor){
+export class Filmes{
+    constructor(titulo, diretor){
         this.id = uniqid();
         this.titulo = titulo;
-        this.autor = autor;
+        this.diretor = diretor;
         this.emprestado = false;
     }
 

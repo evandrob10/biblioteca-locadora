@@ -3,8 +3,8 @@ import {stdin as input, stdout as output} from 'node:process';
 
 const rl = readline.createInterface({ input, output });
 
-function alert(text){
-    if(!text) console.log("Você esqueceu de informar seu nome!");
+function alert(message, error){
+    if(!message) console.log(error);
 }
 
 function question(quest) {
@@ -16,11 +16,12 @@ function question(quest) {
 };
 
 
-export default async function quest(text){
+export default async function Quest({message, error}){
+    
     let response = "";
     do{
-        response = await question(text);
-        alert(response);
+        response = await question(message);
+        alert(response, error);
     }while(!response);
     return response;
 }

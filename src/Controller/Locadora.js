@@ -1,6 +1,6 @@
 import quest from "../../config";
 
-class Biblioteca {
+export class Locadora {
     constructor() {
         this.filmes = [];
     }
@@ -8,7 +8,8 @@ class Biblioteca {
     //Pergunta ao usuario
     perguntarUsuario(filmes){
         filmes.forEach((livro, index) => {
-            quest(`Selecione o livro: \n ID: ${livro.id}, Nome: ${livro.nome}`));
+            quest(`Selecione o livro: \n ID: ${livro.id}, Nome: ${livro.nome}`)
+        });
     }
 
     pegarItem(id, nome){
