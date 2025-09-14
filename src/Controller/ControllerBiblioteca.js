@@ -1,44 +1,26 @@
 import PageHome from "../View/biblioteca/index.js";
 import { PageEmprestimo } from "../View/biblioteca/emprestimo.js";
-import Quest from "../../config/Input.js";
+import Quest from "../Service/Input.js";
 
 export default class ControllerBiblioteca {
-    constructor() {
-        this.livros = [
-            {
-                id: 1,
-                name: "Pai Rico, Pai Pobre",
-                autor: "Kiyosaki Robert T",
-                emprestimo: false
-            },
-            {
-                id: 2,
-                name: "Mentes Extraordinárias",
-                autor: "Dell'Isola, Alberto",
-                emprestimo: false
-            },
-            {
-                id: 4,
-                name: "Joao e Maria",
-                autor: "Roberto Carlos",
-                emprestimo: false
-            },
-            {
-                id: 5,
-                name: "Natal em familia",
-                autor: "Ninguem",
-                emprestimo: false
-            }
-        ];
+    constructor(livros, users) {
         this.page_selected = "";
+        this.livros = livros;
+        this.users = users;
+    }
+
+    devolverLivro(id){
+
     }
 
     vQuantidadePorAluno(idAluno) {
-        const livros = this.livros.filter(element => element.user ? element.user.id == idAluno.id : "");
-        return livros.length < 3;
+        const livros = this.livros.pegarTodosLivros();
+        const livrosEmprestados = livros.filter(element => element.user ? element.user.id == idAluno.id : "");
+        return livrosEmprestados.length < 3;
     }
 
-    async solicitarAluno(db) {
+    async localizarAluno() {
+
         let aluno = "";
 
         do {
@@ -47,12 +29,17 @@ export default class ControllerBiblioteca {
                 error: `Você precisa informar o aluno.`
             })
 
-            aluno = db.users.find(element => element.id == id);
+            aluno = this.users.pegarUsuario(id);
+
+            if(!aluno){
+                console.log("ID de usuario invalido!");
+                continue;
+            }
 
             const response = await Quest({
                 message: `Usuario é ${aluno.nome} \n 1 - SIM \n 2 - NÃO`,
                 error: `Você precisa confirmar o nome do usuario`
-            })
+            });
 
             if (response !== "1") aluno = "";
 
@@ -61,12 +48,12 @@ export default class ControllerBiblioteca {
         return aluno;
     }
 
-    async Views(db) {
+    async Views() {
         do {
             this.page_selected = await PageHome();
             switch (this.page_selected) {
                 case "1":
-                    const aluno = await this.solicitarAluno(db);
+                    const aluno = await this.localizarAluno();
                     const livrosEmprestados = this.vQuantidadePorAluno(aluno); /// verifica quantidade de aluno e retorna se está habilitado a pegarmais livros
 
                     if (!livrosEmprestados) {
@@ -74,16 +61,12 @@ export default class ControllerBiblioteca {
                         return true;
                     }
 
-                    const livro = aluno ? await PageEmprestimo({ livros: this.livros }) : this.Views(db);
-
-                    this.livros = this.livros.map(element => {
-                        if (element.id === livro.id) {
-                            element.emprestimo = true;
-                            element.user = aluno;
-                        }
-                        return element;
-                    })
-                    if (livro) {
+                    const livro = aluno ? await PageEmprestimo({ livros: this.livros.pegarTodosLivros() }) : this.Views();
+                    
+                    if(livro){
+                        livro.user = aluno;
+                        livro.emprestimo = true;
+                        this.livros.atualizarLivros(livro.id, livro);
                         console.log(`O livro ${livro.name} emprestado com sucesso!`)
                     }
 

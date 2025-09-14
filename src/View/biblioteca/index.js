@@ -1,4 +1,4 @@
-import Quest from "../../../config/Input.js";
+import Quest from "../../Service/Input.js";
 const PageHome = async () => {
     return await Quest({
         message: `ESCOLHA UMA DAS OPÇÕES: \n 1 - EMPRESTAR LIVRO \n 2 - DEVOLVER LIVRO \n 3 - SAIR`,

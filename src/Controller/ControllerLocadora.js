@@ -13,13 +13,8 @@ export class Locadora {
     }
 
     pegarItem(id, nome){
-        if(id){
-           const filme = [this.filmes.find(filme => filme.id = id)];
-        }else{
-           const  filmes = this.filmes.filter(filme => filme.nome.includes(nome));
-        }
+        return id ? [this.filmes.find(filme => filme.id = id)] : this.filmes.filter(filme => filme.nome.includes(nome));
     }
-
 
     adicionarLivro(livro) {
         this.filmes.push(livro);

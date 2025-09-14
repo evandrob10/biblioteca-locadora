@@ -1,19 +1,25 @@
-import Quest from "../config/Input.js";
+import Quest from "../src/Service/Input.js";
 import ControllerBiblioteca from "./Controller/ControllerBiblioteca.js";
 import ControllerCadastro from "./Controller/ControllerCadastro.js";
-import DB from "./db/users.js";
+import Users from "../db/users.js";
+import Livros from "../db/livros.js";
+import Filmes from "../db/filmes.js";
 
 export class Routes {
     constructor() {
-        this.db = new DB();
+        this.db = {
+            users: new Users(),
+            livros: new Livros(),
+            filmes: new Filmes()
+        }
         this.initRoutes();
     }
     //Routas:
     async routes(modul_selected) {
         switch (modul_selected) {
             case "1":
-                const controllerB = new ControllerBiblioteca();
-                const response = await controllerB.Views(this.db);
+                const controllerB = new ControllerBiblioteca(this.db.livros, this.db.users);
+                const response = await controllerB.Views();
                 if (response) this.initRoutes(); // Verifica obteve retorno da view
                 else return true
                 break;
@@ -21,8 +27,8 @@ export class Routes {
 
                 break;
             case "3":
-                const controllerC = new ControllerCadastro();
-                await controllerC.PageCadastro(this.db);
+                const controllerC = new ControllerCadastro(this.db.users);
+                await controllerC.PageCadastro(this.db.users);
                 this.initRoutes()
                 break;
             case "4":

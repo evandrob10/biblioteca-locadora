@@ -1,4 +1,4 @@
-import Quest from "../../../config/Input.js";
+import Quest from "../../Service/Input.js";
 export async function PageEmprestimo({livros}) {
 
     function listarLivros() {
