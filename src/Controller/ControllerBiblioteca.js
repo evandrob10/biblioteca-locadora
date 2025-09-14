@@ -31,7 +31,7 @@ export default class ControllerBiblioteca {
 
     vQuantityPerStudent(idStudents) {
         const products = this.products.getAll();
-        const productsLedding = products.filter(product => product.lending ? element.user.id == idStudents.id : "");
+        const productsLedding = products.filter(product => product.lending ? product.user.id == idStudents.id : "");
         return productsLedding.length < 3;
     }
 
@@ -63,9 +63,9 @@ export default class ControllerBiblioteca {
         return user;
     }
 
-    async Views(Book) {
+    async Views(typeBook) {
         do {
-            const text = Book ? "LIVRO" : "FILME";
+            const text = typeBook ? "LIVRO" : "FILME";
             this.pageSelected = await PageHome({ text: text });
             switch (this.pageSelected) {
                 case "1":
@@ -73,23 +73,23 @@ export default class ControllerBiblioteca {
                     const productsLedding = this.vQuantityPerStudent(student); /// verifica quantidade de aluno e retorna se está habilitado a pegarmais livros
 
                     if (!productsLedding) {
-                        console.log("O aluno atingiu a quantidade maxima emprestimo de livro!")
+                        console.log("O aluno atingiu a quantidade maxima emprestimo!")
                         return true;
                     }
 
-                    const product = student ? await PageLending({ products: this.products.getAll() }) : this.Views();
+                    const product = student ? await PageLending({ products: this.products.getAll(), typeBook }) : this.Views();
 
                     if (product) {
                         product.user = student;
-                        product.emprestimo = true;
+                        product.lending = true;
                         this.products.update(product.id, product);
-                        console.log(`O livro ${product.name} emprestado com sucesso!`)
+                        console.log(`O ${text.toLowerCase()} ${product.name} emprestado com sucesso!`)
                     }
 
                     break;
                 case "2":
                     const productAll = this.products.getAll();
-                    const response = await PageRefund(productAll, "livro");
+                    const response = await PageRefund(productAll, text.toLowerCase());
                     if (response) this.refund(response.id);
                     break;
             }

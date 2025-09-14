@@ -22,11 +22,14 @@ export class Routes {
         switch (modul_selected) {
             case "1":
                 const controllerB = new ControllerBiblioteca(this.db.livros, this.db.users);
-                const response = await controllerB.Views(true);
-                if (response) this.initRoutes(); // Verifica obteve retorno da view
+                const books = await controllerB.Views(true);
+                if (books) this.initRoutes(); // Verifica obteve retorno da view
                 else return true
                 break;
             case "2":
+                const controllerM = new ControllerBiblioteca(this.db.filmes, this.db.users);
+                const movies = await controllerM.Views();
+                if (movies) this.initRoutes(); // Verifica obteve retorno da view
                 break;
             case "3":
                 const controllerC = new ControllerCadastro(this.db.users);
