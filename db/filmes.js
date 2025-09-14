@@ -1,34 +1,38 @@
-export default class Filmes {
+export default class Movies {
     constructor() {
-        this.filmes = [
+        this.movies = [
             {
                 id: 1,
                 name: "Pai Rico, Pai Pobre",
                 autor: "Kiyosaki Robert T",
-                emprestimo: false
+                lending: false
             },
             {
                 id: 2,
                 name: "Mentes Extraordinárias",
                 autor: "Dell'Isola, Alberto",
-                emprestimo: false
+                lending: false
             },
             {
                 id: 4,
                 name: "Joao e Maria",
                 autor: "Roberto Carlos",
-                emprestimo: false
+                lending: false
             },
             {
                 id: 5,
                 name: "Natal em familia",
                 autor: "Ninguem",
-                emprestimo: false
+                lending: false
             }
         ];
     }
 
-    pegarTodosFilmes(){
-        return this.filmes;
+    update(id, update){
+        this.movies = this.movies.map(element => element.id == id ? element = update : element);
+    }
+
+    getAll(){
+        return this.movies;
     }
 }

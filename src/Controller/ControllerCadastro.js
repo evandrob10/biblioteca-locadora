@@ -1,10 +1,10 @@
-import Cadastro from "../View/cadastro.js";
+import PageRegister from "../View/register.js";
 
 export default class ControllerCadastro{
-    async PageCadastro(db){
-       const usuario =  await Cadastro();
+    async Register(db){
+       const usuario =  await PageRegister();
        if(usuario){
-            db.adicionarUsuario(usuario);
+            db.set(usuario);
             console.log(usuario);
             console.log("Usuario cadastrado com sucesso!");
        }else{

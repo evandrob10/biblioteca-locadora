@@ -1,43 +1,42 @@
 //VIEWS
-import PageHome from "../View/pageHome.js";
-import PageDevolucao from "../View/devolucao.js";
-import { PageEmprestimo } from "../View/emprestimo.js";
+import PageHome from "../View/home.js";
+import PageRefund from "../View/refund.js";
+import { PageLending } from "../View/lending.js";
 //SERVICES
 import Quest from "../Service/Input.js";
 
 export default class ControllerBiblioteca {
-    constructor(livros, users) {
+    constructor(products, users) {
         this.page_selected = "";
-        this.livros = livros;
+        this.products = products;
         this.users = users;
     }
 
-    devolverLivro(id) {
-        let confirmar = true;
+    refund(id) {
+        let confirm = true;
         do {
-            const livro = this.livros.pegarTodosLivros().find(livro => livro.id == id);
-            if (livro) {
-                delete livro.user;
-                livro.emprestimo = false;
-                this.livros.atualizarLivros(id, livro)
-                console.log(`Livro ${livro.name} devolvido com sucesso!`);
-                confirmar = false;
-            }else{
+            const product = this.products.getAll().find(livro => livro.id == id);
+            if (product) {
+                delete product.user;
+                product.lending = false;
+                this.products.update(id, product)
+                console.log(`Livro ${product.name} devolvido com sucesso!`);
+                confirm = false;
+            } else {
                 console.log("O ID informado, não é valido!");
             }
-        } while (confirmar);
+        } while (confirm);
 
     }
 
-    vQuantidadePorAluno(idAluno) {
-        const livros = this.livros.pegarTodosLivros();
-        const livrosEmprestados = livros.filter(element => element.user ? element.user.id == idAluno.id : "");
-        return livrosEmprestados.length < 3;
+    vQuantityPerStudent(idStudents) {
+        const products = this.products.getAll();
+        const productsLedding = products.filter(product => product.lending ? element.user.id == idStudents.id : "");
+        return productsLedding.length < 3;
     }
 
-    async localizarAluno() {
-
-        let aluno = "";
+    async findStudent() {
+        let user = "";
 
         do {
             const id = await Quest({
@@ -45,69 +44,57 @@ export default class ControllerBiblioteca {
                 error: `Você precisa informar o aluno.`
             })
 
-            aluno = this.users.pegarUsuario(id);
+            user = this.users.getUser(id);
 
-            if (!aluno) {
+            if (!user) {
                 console.log("ID de usuario invalido!");
                 continue;
             }
 
             const response = await Quest({
-                message: `Usuario é ${aluno.nome} \n 1 - SIM \n 2 - NÃO`,
+                message: `Usuario é ${user.nome} \n 1 - SIM \n 2 - NÃO`,
                 error: `Você precisa confirmar o nome do usuario`
             });
 
-            if (response !== "1") aluno = "";
+            if (response !== "1") user = "";
 
-        } while (!aluno)
+        } while (!user)
 
-        return aluno;
+        return user;
     }
 
-    async Views() {
+    async Views(Book) {
         do {
-            this.page_selected = await PageHome({text: "LIVRO"});
-            switch (this.page_selected) {
+            const text = Book ? "LIVRO" : "FILME";
+            this.pageSelected = await PageHome({ text: text });
+            switch (this.pageSelected) {
                 case "1":
-                    const aluno = await this.localizarAluno();
-                    const livrosEmprestados = this.vQuantidadePorAluno(aluno); /// verifica quantidade de aluno e retorna se está habilitado a pegarmais livros
+                    const student = await this.findStudent();
+                    const productsLedding = this.vQuantityPerStudent(student); /// verifica quantidade de aluno e retorna se está habilitado a pegarmais livros
 
-                    if (!livrosEmprestados) {
+                    if (!productsLedding) {
                         console.log("O aluno atingiu a quantidade maxima emprestimo de livro!")
                         return true;
                     }
 
-                    const livro = aluno ? await PageEmprestimo({ livros: this.livros.pegarTodosLivros() }) : this.Views();
+                    const product = student ? await PageLending({ products: this.products.getAll() }) : this.Views();
 
-                    if (livro) {
-                        livro.user = aluno;
-                        livro.emprestimo = true;
-                        this.livros.atualizarLivros(livro.id, livro);
-                        console.log(`O livro ${livro.name} emprestado com sucesso!`)
+                    if (product) {
+                        product.user = student;
+                        product.emprestimo = true;
+                        this.products.update(product.id, product);
+                        console.log(`O livro ${product.name} emprestado com sucesso!`)
                     }
 
                     break;
                 case "2":
-                    const livros = this.livros.pegarTodosLivros();
-                    const response = await PageDevolucao(livros, "livro");
-                    if(response) this.devolverLivro(response.id);
+                    const productAll = this.products.getAll();
+                    const response = await PageRefund(productAll, "livro");
+                    if (response) this.refund(response.id);
                     break;
             }
-        } while (this.page_selected !== "3");
+        } while (this.pageSelected !== "3");
         return true;
     }
 
-    listarlivros() {
-        if (this.livros.length) {
-            for (const livro of livros) {
-                if (livro.emprestado) {
-                    console.log(`ID: ${livro.id} \n Nome: ${livro.name} \n Autor: ${livro.autor} \n Emprestado: SIM \n Usuario Locatário: \n ID: ${livro.user.id} \n Nome: ${livro.user.nome}`);
-                } else {
-                    console.log(`ID: ${livro.id} \n Nome: ${livro.name} \n Autor: ${livro.autor} \n Emprestado: NÃO`);
-                }
-            }
-        } else {
-            console.log("Não há livros cadastrados!");
-        }
-    }
 }

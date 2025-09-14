@@ -1,6 +1,6 @@
 import Quest from "../Service/Input.js";
 
-export default async function PageDevolucao(itens, text) {
+export default async function PageRefund(itens, text) {
     do {
         const response = await Quest({
             message: `Digite id do livro:`,

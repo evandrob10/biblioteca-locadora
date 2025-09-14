@@ -1,6 +1,6 @@
 import Quest from "../Service/Input.js";
 import { Usuario } from "../Service/Usuario.js";
-export default async function Cadastro(users) {
+export default async function PageRegister(users) {
     console.log('Bem vindo ao Cadastro de usuarios!');
     let validarUsuario = true;
     let nomeUsuario = "";

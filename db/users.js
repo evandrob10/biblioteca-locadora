@@ -3,11 +3,11 @@ export default class Users{
         this.users = [];
     }
 
-    adicionarUsuario(user){
+    set(user){
         this.users.push(user);
     }
 
-    pegarUsuario(id){
+    getUser(id){
         return this.users.find(element => element.id === id);
     }
 }

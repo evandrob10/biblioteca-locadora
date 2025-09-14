@@ -1,38 +1,38 @@
-export default class Livros {
+export default class Books {
     constructor() {
-        this.livros = [
+        this.books = [
             {
                 id: 1,
                 name: "Pai Rico, Pai Pobre",
                 autor: "Kiyosaki Robert T",
-                emprestimo: false
+                lending: false
             },
             {
                 id: 2,
                 name: "Mentes Extraordinárias",
                 autor: "Dell'Isola, Alberto",
-                emprestimo: false
+                lending: false
             },
             {
                 id: 4,
                 name: "Joao e Maria",
                 autor: "Roberto Carlos",
-                emprestimo: false
+                lending: false
             },
             {
                 id: 5,
                 name: "Natal em familia",
                 autor: "Ninguem",
-                emprestimo: false
+                lending: false
             }
         ];    
     }
 
-    atualizarLivros(id, update){
-        this.livros = this.livros.map(element => element.id == id ? element = update : element);
+    update(id, update){
+        this.books = this.books.map(element => element.id == id ? element = update : element);
     }
 
-    pegarTodosLivros(){
-        return this.livros;
+    getAll(){
+        return this.books;
     }
 }
