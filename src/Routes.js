@@ -21,18 +21,18 @@ export class Routes {
     async routes(modul_selected) {
         switch (modul_selected) {
             case "1":
-                const controllerB = new ControllerBiblioteca(this.db.livros, this.db.users);
+                const controllerB = new ControllerBiblioteca(this.db.livros, this.db.users, this.initRoutes);
                 const books = await controllerB.Views(true);
                 if (books) this.initRoutes(); // Verifica obteve retorno da view
                 else return true
                 break;
             case "2":
-                const controllerM = new ControllerBiblioteca(this.db.filmes, this.db.users);
+                const controllerM = new ControllerBiblioteca(this.db.filmes, this.db.users, this.initRoutes);
                 const movies = await controllerM.Views();
                 if (movies) this.initRoutes(); // Verifica obteve retorno da view
                 break;
             case "3":
-                const controllerC = new ControllerCadastro(this.db.users);
+                const controllerC = new ControllerCadastro(this.db.users, this.initRoutes);
                 await controllerC.Register(this.db.users);
                 this.initRoutes()
                 break;

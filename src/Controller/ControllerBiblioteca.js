@@ -40,9 +40,11 @@ export default class ControllerBiblioteca {
 
         do {
             const id = await Quest({
-                message: `Digite o nome ID do aluno:`,
+                message: `Digite o nome ID do aluno:\n (Digite SAIR para cancelar)`,
                 error: `Você precisa informar o aluno.`
             })
+
+            if(id.toLowerCase() == "sair") return;
 
             user = this.users.getUser(id);
 
@@ -77,7 +79,7 @@ export default class ControllerBiblioteca {
                         return true;
                     }
 
-                    const product = student ? await PageLending({ products: this.products.getAll(), typeBook }) : this.Views();
+                    const product = student && await PageLending({ products: this.products.getAll(), typeBook });
 
                     if (product) {
                         product.user = student;
