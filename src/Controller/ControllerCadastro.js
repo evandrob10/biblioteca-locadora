@@ -1,4 +1,4 @@
-import Cadastro from "../View/cadastro/index.js";
+import Cadastro from "../View/cadastro.js";
 
 export default class ControllerCadastro{
     async PageCadastro(db){

@@ -1,5 +1,8 @@
-import PageHome from "../View/biblioteca/index.js";
-import { PageEmprestimo } from "../View/biblioteca/emprestimo.js";
+//VIEWS
+import PageHome from "../View/pageHome.js";
+import PageDevolucao from "../View/devolucao.js";
+import { PageEmprestimo } from "../View/emprestimo.js";
+//SERVICES
 import Quest from "../Service/Input.js";
 
 export default class ControllerBiblioteca {
@@ -9,7 +12,20 @@ export default class ControllerBiblioteca {
         this.users = users;
     }
 
-    devolverLivro(id){
+    devolverLivro(id) {
+        let confirmar = true;
+        do {
+            const livro = this.livros.pegarTodosLivros().find(livro => livro.id == id);
+            if (livro) {
+                delete livro.user;
+                livro.emprestimo = false;
+                this.livros.atualizarLivros(id, livro)
+                console.log(`Livro ${livro.name} devolvido com sucesso!`);
+                confirmar = false;
+            }else{
+                console.log("O ID informado, não é valido!");
+            }
+        } while (confirmar);
 
     }
 
@@ -31,7 +47,7 @@ export default class ControllerBiblioteca {
 
             aluno = this.users.pegarUsuario(id);
 
-            if(!aluno){
+            if (!aluno) {
                 console.log("ID de usuario invalido!");
                 continue;
             }
@@ -50,7 +66,7 @@ export default class ControllerBiblioteca {
 
     async Views() {
         do {
-            this.page_selected = await PageHome();
+            this.page_selected = await PageHome({text: "LIVRO"});
             switch (this.page_selected) {
                 case "1":
                     const aluno = await this.localizarAluno();
@@ -62,14 +78,19 @@ export default class ControllerBiblioteca {
                     }
 
                     const livro = aluno ? await PageEmprestimo({ livros: this.livros.pegarTodosLivros() }) : this.Views();
-                    
-                    if(livro){
+
+                    if (livro) {
                         livro.user = aluno;
                         livro.emprestimo = true;
                         this.livros.atualizarLivros(livro.id, livro);
                         console.log(`O livro ${livro.name} emprestado com sucesso!`)
                     }
 
+                    break;
+                case "2":
+                    const livros = this.livros.pegarTodosLivros();
+                    const response = await PageDevolucao(livros, "livro");
+                    if(response) this.devolverLivro(response.id);
                     break;
             }
         } while (this.page_selected !== "3");

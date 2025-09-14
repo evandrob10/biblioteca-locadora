@@ -1,8 +1,8 @@
-import Quest from "../../Service/Input.js";
-export async function PageEmprestimo({livros}) {
+import Quest from "../Service/Input.js";
+export async function PageEmprestimo({itens}) {
 
     function listarLivros() {
-        livros.forEach(element => !element.emprestimo ? console.log(`ID: ${element.id} \n Nome: ${element.name} \n Autor: ${element.autor} \n ${`=`.repeat(20)}`) : console.log(`ID: ${element.id} \n Nome: ${element.name} \n Autor: ${element.autor} \n Emprestado: SIM \n Usuario Locatário: \n ID: ${element.user.id} \n Nome: ${element.user.nome}`));
+        itens.forEach(element => !element.emprestimo ? console.log(`ID: ${element.id} \n Nome: ${element.name} \n Autor: ${element.autor} \n ${`=`.repeat(20)}`) : console.log(`ID: ${element.id} \n Nome: ${element.name} \n Autor: ${element.autor} \n Emprestado: SIM \n Usuario Locatário: \n ID: ${element.user.id} \n Nome: ${element.user.nome}`));
     }
 
     async function selecionarLivro() {
@@ -13,7 +13,7 @@ export async function PageEmprestimo({livros}) {
                 error: `Você precisa digitar o id do livro`
             })
 
-            const livro_selected = livros.find(element => `${element.id}` === response);
+            const livro_selected = itens.find(element => `${element.id}` === response);
 
             if (livro_selected) {
                 console.log(`ID: ${livro_selected.id} \n Nome: ${livro_selected.name} \n Autor: ${livro_selected.autor}`)
