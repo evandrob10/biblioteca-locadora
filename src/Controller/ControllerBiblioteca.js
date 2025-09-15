@@ -106,7 +106,7 @@ export default class ControllerBiblioteca {
     }
 
     async registerProduct({ livros, filmes }) {
-        const { product, productType } = await PageCreateProduct()
+        const { product, productType } = await PageCreateProduct();
         if (product && productType) {
             if (productType.toLowerCase() === "filme") filmes.create(this.createProduct(product));
             else livros.create(this.createProduct(product));

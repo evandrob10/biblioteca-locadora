@@ -59,6 +59,7 @@ export class Routes {
     }
     //Inicia as rotas:
     async initRoutes() {
+        console.clear();
         let exit = false;
         do {
             const modul_selected = await Quest({
@@ -67,5 +68,6 @@ export class Routes {
             });
             exit = this.routes(modul_selected);
         } while (!exit);
+        
     }
 }

@@ -18,7 +18,7 @@ export default async function PageCreateProduct() {
         });
 
         if (verify === "2") continue;
-        if (verify === "SAIR") break;
+        if (verify.toLocaleLowerCase() === "sair") return {};
         if (verify !== "1") {
             console.log("Opção invalida!");
             continue;
