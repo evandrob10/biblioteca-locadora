@@ -22,18 +22,31 @@ export class Routes {
         switch (modul_selected) {
             case "1":
                 const controllerB = new ControllerBiblioteca(this.db.livros, this.db.users, this.initRoutes);
-                const books = await controllerB.Views(true);
+                const books = await controllerB.Product(true);
                 if (books) this.initRoutes(); // Verifica obteve retorno da view
                 else return true
                 break;
             case "2":
                 const controllerM = new ControllerBiblioteca(this.db.filmes, this.db.users, this.initRoutes);
-                const movies = await controllerM.Views();
+                const movies = await controllerM.Product();
                 if (movies) this.initRoutes(); // Verifica obteve retorno da view
                 break;
             case "3":
-                const controllerC = new ControllerCadastro(this.db.users, this.initRoutes);
-                await controllerC.Register(this.db.users);
+                const selected = await Quest({
+                    message: 'ESCOLHA MODULO ACESSAR: \n 1 - CADASTRAR ALUNO \n 2 - CADASTRAR PRODUTO',
+                    error: 'Você esqueceu de selecionar o modulo'
+                });
+
+                if (selected == "1") {
+                    const controllerC = new ControllerCadastro(this.db.users, this.initRoutes);
+                    await controllerC.Register(this.db.users);
+                } else if (selected == "2") {
+                    const controllerCP = new ControllerBiblioteca();
+                    await controllerCP.registerProduct({ livros: this.db.livros, filmes: this.db.filmes });
+                } else {
+                    console.log("opção invalida!");
+                }
+
                 this.initRoutes()
                 break;
             case "4":
@@ -41,6 +54,7 @@ export class Routes {
                 return true;
             default:
                 console.log("Opção invalida!");
+                this.initRoutes();
         }
     }
     //Inicia as rotas:

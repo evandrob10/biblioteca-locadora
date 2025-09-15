@@ -2,8 +2,11 @@
 import PageHome from "../View/home.js";
 import PageRefund from "../View/refund.js";
 import { PageLending } from "../View/lending.js";
+import PageCreateProduct from "../View/createProduct.js";
 //SERVICES
 import Quest from "../Service/Input.js";
+import { Filme } from "../Service/Filmes.js";
+import { Livro } from "../Service/Livro.js"
 
 export default class ControllerBiblioteca {
     constructor(products, users) {
@@ -12,21 +15,20 @@ export default class ControllerBiblioteca {
         this.users = users;
     }
 
-    refund(id) {
+    refund(id, type) {
         let confirm = true;
         do {
-            const product = this.products.getAll().find(livro => livro.id == id);
+            const product = this.products.getAll().find(product => product.id == id);
             if (product) {
                 delete product.user;
                 product.lending = false;
                 this.products.update(id, product)
-                console.log(`Livro ${product.name} devolvido com sucesso!`);
+                console.log(`${type ? "Livro" : "Filme"} ${product.name} devolvido com sucesso!`);
                 confirm = false;
             } else {
                 console.log("O ID informado, não é valido!");
             }
         } while (confirm);
-
     }
 
     vQuantityPerStudent(idStudents) {
@@ -44,7 +46,7 @@ export default class ControllerBiblioteca {
                 error: `Você precisa informar o aluno.`
             })
 
-            if(id.toLowerCase() == "sair") return;
+            if (id.toLowerCase() == "sair") return;
 
             user = this.users.getUser(id);
 
@@ -65,7 +67,7 @@ export default class ControllerBiblioteca {
         return user;
     }
 
-    async Views(typeBook) {
+    async Product(typeBook) {
         do {
             const text = typeBook ? "LIVRO" : "FILME";
             this.pageSelected = await PageHome({ text: text });
@@ -92,11 +94,23 @@ export default class ControllerBiblioteca {
                 case "2":
                     const productAll = this.products.getAll();
                     const response = await PageRefund(productAll, text.toLowerCase());
-                    if (response) this.refund(response.id);
+                    if (response) this.refund(response.id, typeBook);
                     break;
             }
         } while (this.pageSelected !== "3");
         return true;
     }
 
+    createProduct(product){
+        return new Filme(product.name, product.autor)
+    }
+
+    async registerProduct({ livros, filmes }) {
+        const { product, productType } = await PageCreateProduct()
+        if (product && productType) {
+            if (productType.toLowerCase() === "filme") filmes.create(this.createProduct(product));
+            else livros.create(this.createProduct(product));
+            console.log("Produto registrado");
+        }else console.log("Error ao criar produto!");
+    }
 }

@@ -3,7 +3,7 @@ export default class Users{
         this.users = [];
     }
 
-    set(user){
+    create(user){
         this.users.push(user);
     }
 

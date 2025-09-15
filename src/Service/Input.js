@@ -17,7 +17,6 @@ function question(quest) {
 
 
 export default async function Quest({message, error, exit}){
-    
     let response = "";
     do{
         response = await question(message);

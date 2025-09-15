@@ -28,6 +28,10 @@ export default class Movies {
         ];
     }
 
+    create(movie){
+        this.movies.push(movie)
+    }
+
     update(id, update){
         this.movies = this.movies.map(element => element.id == id ? element = update : element);
     }

@@ -3,7 +3,7 @@ import uniqid from 'uniqid';
 export class Livro{
     constructor(titulo, autor){
         this.id = uniqid();
-        this.titulo = titulo;
+        this.name = titulo;
         this.autor = autor;
         this.emprestado = false;
     }

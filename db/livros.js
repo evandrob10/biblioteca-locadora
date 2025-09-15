@@ -28,6 +28,10 @@ export default class Books {
         ];    
     }
 
+    create(book){
+        this.books.push(book);
+    }
+
     update(id, update){
         this.books = this.books.map(element => element.id == id ? element = update : element);
     }
